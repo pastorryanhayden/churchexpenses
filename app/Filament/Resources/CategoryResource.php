@@ -50,6 +50,8 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('total')
+                    ->money('USD'),
                 Tables\Columns\TextColumn::make('group')
                     ->badge()
                     ->toggleable(isToggledHiddenByDefault: true),
