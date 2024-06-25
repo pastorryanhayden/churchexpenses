@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExpenseResource\Pages;
+use App\Filament\Resources\ExpenseResource\RelationManagers\CcExpensesRelationManager;
 use App\Models\Category;
 use App\Models\Expense;
 use Filament\Forms;
@@ -10,12 +11,17 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ExpenseResource extends Resource
 {
     protected static ?string $model = Expense::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Bank Ledger';
+
+    protected static ?string $modelLabel = 'Entry';
+
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
     public static function form(Form $form): Form
     {
@@ -24,21 +30,35 @@ class ExpenseResource extends Resource
                 Forms\Components\TextInput::make('date')
                     ->required(),
                 Forms\Components\TextInput::make('credit_ammount')
-                    ->required()
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->prefix('$')
+                    ->hidden(function (?Model $record) {
+                        return $record->credit_ammount > 0 ? false : true;
+                    })
+                    ->disabled(),
                 Forms\Components\TextInput::make('debit_ammount')
-                    ->required()
+                    ->disabled()
                     ->numeric()
+                    ->prefix('$')
+                    ->hidden(function (?Model $record) {
+                        return $record->debit_ammount > 0 ? false : true;
+                    })
                     ->default(0),
-                Forms\Components\TextInput::make('code')
-                    ->numeric(),
                 Forms\Components\TextInput::make('description'),
-                Forms\Components\TextInput::make('reference')
-                    ->numeric(),
                 Forms\Components\TextInput::make('memo'),
-                Forms\Components\TextInput::make('category_id')
-                    ->numeric(),
+                Forms\Components\Select::make('vendor_id')
+                    ->relationship(name: 'vendor', titleAttribute: 'name')
+                    ->preload()
+                    ->searchable()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required()]),
+                Forms\Components\Select::make('category_id')
+                    ->relationship(name: 'category', titleAttribute: 'title')
+                    ->preload()
+                    ->required()
+                    ->searchable(),
             ]);
     }
 
@@ -89,7 +109,7 @@ class ExpenseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CcExpensesRelationManager::class,
         ];
     }
 
