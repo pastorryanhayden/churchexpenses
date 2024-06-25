@@ -27,6 +27,9 @@ class ListExpenses extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('credit_ammount', '>', 0)),
             'inactive' => Tab::make('Debits')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('debit_ammount', '>', 0)),
+            'second_inactive' => Tab::make('To Categorize')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('debit_ammount', '>', 0)->whereDoesntHave('category')),
+
         ];
     }
 }
