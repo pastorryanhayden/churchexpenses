@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExpenseResource\Pages;
 use App\Filament\Resources\ExpenseResource\RelationManagers\CcExpensesRelationManager;
+use App\Filament\Resources\ExpenseResource\RelationManagers\IncomeSplitsRelationManager;
 use App\Models\Category;
 use App\Models\Expense;
 use Filament\Forms;
@@ -110,6 +111,8 @@ class ExpenseResource extends Resource
     {
         return [
             CcExpensesRelationManager::class,
+            IncomeSplitsRelationManager::class,
+
         ];
     }
 
