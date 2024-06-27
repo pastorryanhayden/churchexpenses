@@ -11,6 +11,13 @@ class Expense extends Model
 
     protected $guarded = [];
 
+    protected function casts()
+    {
+        return [
+            'split' => 'boolean',
+        ];
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

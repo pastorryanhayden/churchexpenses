@@ -60,6 +60,9 @@ class ExpenseResource extends Resource
                     ->preload()
                     ->required()
                     ->searchable(),
+                Forms\Components\Toggle::make('split')
+                    ->label('Split Item?')
+                    ->columnSpanFull(),
             ]);
     }
 
