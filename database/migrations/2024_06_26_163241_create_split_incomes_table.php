@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->float('amount');
             $table->unsignedInteger('category_id');
+            $table->unsignedInteger('entry_id');
             $table->timestamps();
         });
     }

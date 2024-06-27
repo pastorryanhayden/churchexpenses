@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ExpenseResource\Pages;
-use App\Filament\Resources\ExpenseResource\RelationManagers\CcExpensesRelationManager;
-use App\Filament\Resources\ExpenseResource\RelationManagers\IncomeSplitsRelationManager;
+use App\Filament\Resources\EntriesResource\Pages;
 use App\Models\Category;
-use App\Models\Expense;
+use App\Models\Entry;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,11 +12,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class ExpenseResource extends Resource
+class EntriesResource extends Resource
 {
-    protected static ?string $model = Expense::class;
+    protected static ?string $model = Entry::class;
 
-    protected static ?string $navigationLabel = 'Bank Ledger';
+    protected static ?string $navigationLabel = 'Bank Entries';
 
     protected static ?string $modelLabel = 'Entry';
 
@@ -30,20 +28,20 @@ class ExpenseResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('date')
                     ->required(),
-                Forms\Components\TextInput::make('credit_ammount')
+                Forms\Components\TextInput::make('credit_amount')
                     ->numeric()
                     ->default(0)
                     ->prefix('$')
                     ->hidden(function (?Model $record) {
-                        return $record->credit_ammount > 0 ? false : true;
+                        return $record->credit_amount > 0 ? false : true;
                     })
                     ->disabled(),
-                Forms\Components\TextInput::make('debit_ammount')
+                Forms\Components\TextInput::make('debit_amount')
                     ->disabled()
                     ->numeric()
                     ->prefix('$')
                     ->hidden(function (?Model $record) {
-                        return $record->debit_ammount > 0 ? false : true;
+                        return $record->debit_amount > 0 ? false : true;
                     })
                     ->default(0),
                 Forms\Components\TextInput::make('description'),
@@ -83,11 +81,11 @@ class ExpenseResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Amount')
-                    ->state(function (Expense $record) {
-                        if ($record->credit_ammount) {
-                            return '+$'.number_format($record->credit_ammount, 2);
-                        } elseif ($record->debit_ammount) {
-                            return '-$'.number_format($record->debit_ammount, 2);
+                    ->state(function (Entry $record) {
+                        if ($record->credit_amount) {
+                            return '+$'.number_format($record->credit_amount, 2);
+                        } elseif ($record->debit_amount) {
+                            return '-$'.number_format($record->debit_amount, 2);
                         }
 
                         return '$0.00';
@@ -113,18 +111,16 @@ class ExpenseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            CcExpensesRelationManager::class,
-            IncomeSplitsRelationManager::class,
-
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExpenses::route('/'),
-            'create' => Pages\CreateExpense::route('/create'),
-            'edit' => Pages\EditExpense::route('/{record}/edit'),
+            'index' => Pages\ListEntries::route('/'),
+            'create' => Pages\CreateEntries::route('/create'),
+            'edit' => Pages\EditEntries::route('/{record}/edit'),
         ];
     }
 }

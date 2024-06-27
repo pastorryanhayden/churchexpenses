@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('entries', function (Blueprint $table) {
             $table->id();
             $table->string('date');
-            $table->float('credit_ammount')->default(0);
-            $table->float('debit_ammount')->default(0);
+            $table->float('credit_amount')->default(0);
+            $table->float('debit_amount')->default(0);
             $table->unsignedInteger('code')->nullable();
             $table->string('description')->nullable();
             $table->unsignedInteger('reference')->nullable();
             $table->string('memo')->nullable();
             $table->unsignedInteger('category_id')->nullable();
+            $table->unsignedInteger('vendor_id')->nullable();
+            $table->boolean('split')->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('entries');
     }
 };

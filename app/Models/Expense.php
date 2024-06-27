@@ -28,9 +28,14 @@ class Expense extends Model
         return $this->hasMany(CcExpense::class);
     }
 
-    public function income_splits()
+    public function split_incomes()
     {
         return $this->hasMany(SplitIncome::class);
+    }
+
+    public function split_expenses()
+    {
+        return $this->hasMany(SplitExpense::class);
     }
 
     public function vendor()

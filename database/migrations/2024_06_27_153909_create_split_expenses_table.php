@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('split_expenses', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
             $table->unsignedInteger('category_id')->nullable();
             $table->unsignedInteger('vendor_id')->nullable();
-            $table->float('ammount');
+            $table->unsignedInteger('entry_id');
+            $table->float('amount');
             $table->string('note')->nullable();
             $table->timestamps();
         });

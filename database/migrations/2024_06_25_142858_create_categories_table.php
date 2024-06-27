@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
+            $table->string('type')->default('debit');
+            $table->string('group')->default('other');
+            $table->boolean('non_budget')->default(0);
             $table->timestamps();
         });
     }

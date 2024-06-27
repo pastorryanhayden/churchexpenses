@@ -16,8 +16,8 @@ class SplitIncome extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function expense()
+    public function entry()
     {
-        return $this->belongsTo(Expense::class);
+        return $this->belongsTo(Entry::class);
     }
 }

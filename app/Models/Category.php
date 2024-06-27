@@ -11,30 +11,38 @@ class Category extends Model
 
     protected $guarded = [];
 
-    public function expenses()
+    protected function casts()
     {
-        return $this->hasMany(Expense::class);
+        return [
+            'non_budget' => 'boolean',
+        ];
     }
 
-    public function credit_card_expenses()
+    public function entries()
     {
-        return $this->hasMany(CcExpense::class);
+        return $this->hasMany(Entry::class);
+    }
+
+    public function split_incomes()
+    {
+        return $this->hasMany(SplitIncome::class);
+    }
+
+    public function split_expenses()
+    {
+        return $this->hasMany(SplitExpense::class);
     }
 
     public function getTotalAttribute()
     {
-        if ($this->title != 'Credit Card Payment') {
-            if ($this->type == 'debit') {
-                $expenses = $this->expenses()->sum('debit_ammount');
-                $cc_expenses = $this->credit_card_expenses()->sum('cost');
-            } elseif ($this->type == 'credit') {
-                $expenses = $this->expenses()->sum('credit_ammount');
-                $cc_expenses = $this->credit_card_expenses()->sum('cost');
-            }
-
-            return $expenses + $cc_expenses;
-        } else {
-            return 0;
+        if ($this->type == 'debit') {
+            $expenses = $this->entries()->sum('debit_amount');
+            $cc_expenses = $this->split_expenses()->sum('amount');
+        } elseif ($this->type == 'credit') {
+            $expenses = $this->entries()->sum('credit_amount');
+            $cc_expenses = $this->split_incomes()->sum('amount');
         }
+
+        return $expenses + $cc_expenses;
     }
 }
