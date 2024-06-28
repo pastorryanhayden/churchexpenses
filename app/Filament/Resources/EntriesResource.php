@@ -103,8 +103,13 @@ class EntriesResource extends Resource
                     ->visibleFrom('2xl'),
                 Tables\Columns\SelectColumn::make('category_id')
                     ->label('Category')
-                    ->options(Category::all()->pluck('title', 'id')->toArray())
-                    ->sortable(),
+                    ->options(function (?Model $record) {
+                        if ($record->credit_amount > 0) {
+                            return Category::where('type', 'credit')->pluck('title', 'id')->toArray();
+                        } elseif ($record->debit_amount > 0) {
+                            return Category::where('type', 'debit')->pluck('title', 'id')->toArray();
+                        }
+                    })->sortable(),
                 Tables\Columns\ToggleColumn::make('split')
                     ->label('Split Entry?'),
 

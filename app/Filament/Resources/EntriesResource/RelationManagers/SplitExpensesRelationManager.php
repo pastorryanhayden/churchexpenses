@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\EntriesResource\RelationManagers;
 
+use App\Models\Category;
+use App\Models\Vendor;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -19,7 +21,23 @@ class SplitExpensesRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('cost')
                     ->required()
-                    ->maxLength(255),
+                    ->numeric()
+                    ->prefix('$')
+                    ->maxLength(10),
+                Forms\Components\DatePicker::make('date')
+                    ->required(),
+                Forms\Components\Select::make('category_id')
+                    ->label('Category')
+                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('vendor_id')
+                    ->label('Vendor')
+                    ->options(Vendor::all()->pluck('name', 'id')->toArray())
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\TextInput::make('note')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -34,6 +52,12 @@ class SplitExpensesRelationManager extends RelationManager
             ->recordTitleAttribute('cost')
             ->columns([
                 Tables\Columns\TextColumn::make('cost'),
+                Tables\Columns\TextColumn::make('date')
+                    ->date(),
+                Tables\Columns\SelectColumn::make('category_id')
+                    ->label('Category')
+                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
+                    ->sortable(),
             ])
             ->filters([
                 //
