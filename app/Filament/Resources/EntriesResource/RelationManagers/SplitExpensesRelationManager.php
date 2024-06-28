@@ -19,7 +19,7 @@ class SplitExpensesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('cost')
+                Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric()
                     ->prefix('$')
@@ -51,13 +51,12 @@ class SplitExpensesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('cost')
             ->columns([
-                Tables\Columns\TextColumn::make('cost'),
+                Tables\Columns\TextColumn::make('amount'),
                 Tables\Columns\TextColumn::make('date')
                     ->date(),
-                Tables\Columns\SelectColumn::make('category_id')
-                    ->label('Category')
-                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('vendor.name'),
+                Tables\Columns\TextColumn::make('category.name'),
+                Tables\Columns\TextColumn::make('note'),
             ])
             ->filters([
                 //
