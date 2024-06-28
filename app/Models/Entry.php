@@ -15,6 +15,7 @@ class Entry extends Model
     {
         return [
             'split' => 'boolean',
+            'date' => 'date',
         ];
     }
 
@@ -36,5 +37,15 @@ class Entry extends Model
     public function vendor()
     {
         return $this->belongsTo(Vendor::class);
+    }
+
+    public function getTypeAttribute()
+    {
+        if ($this->credit_amount > 0) {
+            return 'credit';
+        } else {
+            return 'debit';
+        }
+
     }
 }

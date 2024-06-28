@@ -2,13 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Imports\EntryImporter;
 use App\Filament\Resources\EntriesResource\Pages;
+use App\Filament\Resources\EntriesResource\RelationManagers\SplitExpensesRelationManager;
+use App\Filament\Resources\EntriesResource\RelationManagers\SplitIncomesRelationManager;
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,7 +30,7 @@ class EntriesResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('date')
+                Forms\Components\DatePicker::make('date')
                     ->required(),
                 Forms\Components\TextInput::make('credit_amount')
                     ->numeric()
@@ -54,9 +58,14 @@ class EntriesResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->required()]),
                 Forms\Components\Select::make('category_id')
-                    ->relationship(name: 'category', titleAttribute: 'title')
+                    ->options(function (?Model $record) {
+                        if ($record->credit_amount > 0) {
+                            return Category::where('type', 'credit')->pluck('title', 'id');
+                        } elseif ($record->debit_amount > 0) {
+                            return Category::where('type', 'debit')->pluck('title', 'id');
+                        }
+                    })
                     ->preload()
-                    ->required()
                     ->searchable(),
                 Forms\Components\Toggle::make('split')
                     ->label('Split Item?')
@@ -70,15 +79,8 @@ class EntriesResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('memo')
-                    ->searchable(),
-                Tables\Columns\SelectColumn::make('category_id')
-                    ->label('Category')
-                    ->options(Category::all()->pluck('title', 'id')->toArray())
-                    ->sortable(),
+                    ->sortable()
+                    ->date(),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Amount')
                     ->state(function (Entry $record) {
@@ -91,27 +93,46 @@ class EntriesResource extends Resource
                         return '$0.00';
                     })
                     ->color(function ($record) {
-                        return $record->credit_ammount ? 'success' : ($record->debit_ammount ? 'danger' : 'secondary');
+                        return $record->credit_amount ? 'success' : ($record->debit_amount ? 'danger' : 'secondary');
                     }),
+                Tables\Columns\TextColumn::make('description')
+                    ->searchable()
+                    ->visibleFrom('2xl'),
+                Tables\Columns\TextColumn::make('memo')
+                    ->searchable()
+                    ->visibleFrom('2xl'),
+                Tables\Columns\SelectColumn::make('category_id')
+                    ->label('Category')
+                    ->options(Category::all()->pluck('title', 'id')->toArray())
+                    ->sortable(),
+                Tables\Columns\ToggleColumn::make('split')
+                    ->label('Split Entry?'),
 
             ])
             ->filters([
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton()
+                    ->icon('heroicon-m-pencil-square'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(EntryImporter::class),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            SplitExpensesRelationManager::class,
+            SplitIncomesRelationManager::class,
         ];
     }
 
