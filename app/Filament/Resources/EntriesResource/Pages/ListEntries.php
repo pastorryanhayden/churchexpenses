@@ -22,13 +22,13 @@ class ListEntries extends ListRecords
     public function getCachedTabs(): array
     {
         return [
-            'all' => Tab::make(),
-            'income' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('credit_amount', '>', 0)),
-            'expenses' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('debit_amount', '>', 0)),
-            'to process' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('split', 0)->whereNull('category_id')),
+            //  'all' => Tab::make(),
+            //  'income' => Tab::make()
+            //      ->modifyQueryUsing(fn (Builder $query) => $query->where('credit_amount', '>', 0)),
+            //  'expenses' => Tab::make()
+            //      ->modifyQueryUsing(fn (Builder $query) => $query->where('debit_amount', '>', 0)),
+            //  'to process' => Tab::make()
+            //      ->modifyQueryUsing(fn (Builder $query) => $query->where('split', 0)->whereNull('category_id')),
         ];
     }
 }

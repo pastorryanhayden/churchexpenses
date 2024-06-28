@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\EntriesResource\RelationManagers;
+namespace App\Filament\Resources\IncomeResource\RelationManagers;
 
 use App\Models\Category;
 use App\Models\Vendor;
@@ -11,15 +11,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class SplitExpensesRelationManager extends RelationManager
+class SplitIncomesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'split_expenses';
+    protected static string $relationship = 'split_incomes';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('cost')
+                Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric()
                     ->prefix('$')
@@ -28,7 +28,7 @@ class SplitExpensesRelationManager extends RelationManager
                     ->required(),
                 Forms\Components\Select::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
+                    ->options(Category::where('type', 'credit')->pluck('title', 'id')->toArray())
                     ->searchable()
                     ->preload(),
                 Forms\Components\Select::make('vendor_id')
@@ -39,11 +39,12 @@ class SplitExpensesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('note')
                     ->columnSpanFull(),
             ]);
+
     }
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $ownerRecord->debit_amount > 0 && $ownerRecord->split == true;
+        return $ownerRecord->credit_amount > 0 && $ownerRecord->split == true;
     }
 
     public function table(Table $table): Table
@@ -56,8 +57,7 @@ class SplitExpensesRelationManager extends RelationManager
                     ->date(),
                 Tables\Columns\TextColumn::make('vendor.name'),
                 Tables\Columns\TextColumn::make('category.name'),
-                Tables\Columns\TextColumn::make('note'),
-            ])
+                Tables\Columns\TextColumn::make('note'),            ])
             ->filters([
                 //
             ])

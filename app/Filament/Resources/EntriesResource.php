@@ -13,8 +13,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ImportAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
 
 class EntriesResource extends Resource
 {
@@ -75,26 +78,23 @@ class EntriesResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->searchable()
                     ->sortable()
                     ->date(),
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('Amount')
-                    ->state(function (Entry $record) {
-                        if ($record->credit_amount) {
-                            return '+$'.number_format($record->credit_amount, 2);
-                        } elseif ($record->debit_amount) {
-                            return '-$'.number_format($record->debit_amount, 2);
-                        }
-
-                        return '$0.00';
-                    })
-                    ->color(function ($record) {
-                        return $record->credit_amount ? 'success' : ($record->debit_amount ? 'danger' : 'secondary');
-                    }),
+                TextColumn::make('credit_amount')
+                    ->money('USD')
+                    ->label('Credit Amount')
+                    ->sortable()
+                    ->hidden(Request::query('activeTab') == 'expenses'),
+                TextColumn::make('debit_amount')
+                    ->money('USD')
+                    ->label('Debit Amount')
+                    ->sortable()
+                    ->hidden(Request::query('activeTab') == 'income'),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable()
                     ->visibleFrom('2xl'),
@@ -109,14 +109,17 @@ class EntriesResource extends Resource
                         } elseif ($record->debit_amount > 0) {
                             return Category::where('type', 'debit')->pluck('title', 'id')->toArray();
                         }
-                    })->sortable(),
+                    })
+                    ->sortable(),
                 Tables\Columns\ToggleColumn::make('split')
                     ->label('Split Entry?'),
 
             ])
             ->filters([
-
+                SelectFilter::make('category')
+                    ->relationship('category', 'title'),
             ])
+            ->defaultGroup('category.title')
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->iconButton()

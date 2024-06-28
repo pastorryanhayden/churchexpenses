@@ -3,7 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\VendorResource\Pages;
+use App\Filament\Resources\VendorResource\RelationManagers\EntriesRelationManager;
+use App\Filament\Resources\VendorResource\RelationManagers\SplitExpensesRelationManager;
 use App\Models\Vendor;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -20,7 +23,7 @@ class VendorResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name'),
             ]);
     }
 
@@ -49,7 +52,8 @@ class VendorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EntriesRelationManager::class,
+            SplitExpensesRelationManager::class,
         ];
     }
 
