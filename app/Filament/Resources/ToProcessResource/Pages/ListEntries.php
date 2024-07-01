@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\ToProcessResource\Pages;
 
 use App\Filament\Resources\ToProcessResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListEntries extends ListRecords
@@ -13,7 +12,7 @@ class ListEntries extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+
         ];
     }
 }

@@ -13,6 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -84,8 +85,12 @@ class ExpenseResource extends Resource
                     ->label('Category')
                     ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('split')
-                    ->label('Split Entry?'),
+                IconColumn::make('split')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
 
             ])
             ->filters([

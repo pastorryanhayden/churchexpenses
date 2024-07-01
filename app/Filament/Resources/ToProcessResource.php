@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Imports\EntryImporter;
 use App\Filament\Resources\ToProcessResource\Pages;
 use App\Models\Category;
 use App\Models\Entry;
@@ -12,6 +13,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ImportAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -75,18 +78,22 @@ class ToProcessResource extends Resource
                     ->money('USD')
                     ->label('Credit')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->searchable()
                     ->visibleFrom('2xl'),
-                Tables\Columns\TextColumn::make('memo')
+                TextColumn::make('memo')
                     ->searchable()
                     ->visibleFrom('2xl'),
                 Tables\Columns\SelectColumn::make('category_id')
                     ->label('Category')
                     ->options(Category::all()->pluck('title', 'id')->toArray())
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('split')
-                    ->label('Split Entry?'),
+                IconColumn::make('split')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
 
             ])
             ->filters([
@@ -103,7 +110,11 @@ class ToProcessResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('category_id'));
+            ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('category_id'))
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(EntryImporter::class),
+            ]);
     }
 
     public static function getRelations(): array
@@ -118,5 +129,10 @@ class ToProcessResource extends Resource
             'index' => Pages\ListEntries::route('/'),
             'edit' => Pages\EditEntry::route('/{record}/edit'),
         ];
+    }
+
+    public static function getActions(): array
+    {
+        return [];
     }
 }

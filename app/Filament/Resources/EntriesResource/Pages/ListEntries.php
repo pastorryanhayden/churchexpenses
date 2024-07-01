@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\EntriesResource\Pages;
 
 use App\Filament\Resources\EntriesResource;
-use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +14,7 @@ class ListEntries extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+
         ];
     }
 
