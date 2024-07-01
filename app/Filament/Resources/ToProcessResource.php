@@ -2,8 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\IncomeResource\Pages;
-use App\Filament\Resources\IncomeResource\RelationManagers\SplitIncomesRelationManager;
+use App\Filament\Resources\ToProcessResource\Pages;
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms\Components\DatePicker;
@@ -14,12 +13,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class IncomeResource extends Resource
+class ToProcessResource extends Resource
 {
     protected static ?string $model = Entry::class;
 
@@ -27,9 +24,9 @@ class IncomeResource extends Resource
 
     protected static ?string $navigationParentItem = 'Bank Entries';
 
-    protected static ?string $navigationLabel = 'Income';
+    protected static ?string $navigationLabel = 'To Process';
 
-    protected static ?string $modelLabel = 'Income Entry';
+    protected static ?string $modelLabel = 'Entry';
 
     public static function form(Form $form): Form
     {
@@ -40,6 +37,7 @@ class IncomeResource extends Resource
                 TextInput::make('credit_amount')
                     ->numeric()
                     ->default(0)
+                    ->disabled()
                     ->prefix('$'),
                 TextInput::make('description'),
                 TextInput::make('memo'),
@@ -69,9 +67,13 @@ class IncomeResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->date(),
+                TextColumn::make('debit_amount')
+                    ->money('USD')
+                    ->label('Debit')
+                    ->sortable(),
                 TextColumn::make('credit_amount')
                     ->money('USD')
-                    ->label('Amount')
+                    ->label('Credit')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable()
@@ -81,26 +83,14 @@ class IncomeResource extends Resource
                     ->visibleFrom('2xl'),
                 Tables\Columns\SelectColumn::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id')->toArray())
+                    ->options(Category::all()->pluck('title', 'id')->toArray())
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('split')
                     ->label('Split Entry?'),
 
             ])
             ->filters([
-                SelectFilter::make('category_id')
-                    ->label('Category')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id')),
-                TernaryFilter::make('split')
-                    ->label('Split Status')
-                    ->placeholder('All Entries')
-                    ->trueLabel('Split Entries')
-                    ->falseLabel('Non-split entries')
-                    ->queries(
-                        true: fn (Builder $query) => $query->where('split', 1),
-                        false: fn (Builder $query) => $query->where('split', 0),
-                        blank: fn (Builder $query) => $query
-                    ),
+
             ])
             ->defaultGroup('category.title')
             ->actions([
@@ -113,22 +103,20 @@ class IncomeResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('credit_amount', '>', 0)->whereNotNull('category_id'));
+            ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('category_id'));
     }
 
     public static function getRelations(): array
     {
         return [
-            SplitIncomesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListIncomes::route('/'),
-            'create' => Pages\CreateIncome::route('/create'),
-            'edit' => Pages\EditIncome::route('/{record}/edit'),
+            'index' => Pages\ListEntries::route('/'),
+            'edit' => Pages\EditEntry::route('/{record}/edit'),
         ];
     }
 }

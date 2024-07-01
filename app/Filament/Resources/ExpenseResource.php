@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\IncomeResource\Pages;
-use App\Filament\Resources\IncomeResource\RelationManagers\SplitIncomesRelationManager;
+use App\Filament\Resources\ExpenseResource\Pages;
+use App\Filament\Resources\ExpenseResource\RelationManagers\SplitExpensesRelationManager;
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms\Components\DatePicker;
@@ -19,7 +19,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class IncomeResource extends Resource
+class ExpenseResource extends Resource
 {
     protected static ?string $model = Entry::class;
 
@@ -27,9 +27,9 @@ class IncomeResource extends Resource
 
     protected static ?string $navigationParentItem = 'Bank Entries';
 
-    protected static ?string $navigationLabel = 'Income';
+    protected static ?string $navigationLabel = 'Expenses';
 
-    protected static ?string $modelLabel = 'Income Entry';
+    protected static ?string $modelLabel = 'Expense Entry';
 
     public static function form(Form $form): Form
     {
@@ -37,8 +37,9 @@ class IncomeResource extends Resource
             ->schema([
                 DatePicker::make('date')
                     ->required(),
-                TextInput::make('credit_amount')
+                TextInput::make('debit_amount')
                     ->numeric()
+                    ->disabled()
                     ->default(0)
                     ->prefix('$'),
                 TextInput::make('description'),
@@ -69,7 +70,7 @@ class IncomeResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->date(),
-                TextColumn::make('credit_amount')
+                TextColumn::make('debit_amount')
                     ->money('USD')
                     ->label('Amount')
                     ->sortable(),
@@ -81,7 +82,7 @@ class IncomeResource extends Resource
                     ->visibleFrom('2xl'),
                 Tables\Columns\SelectColumn::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id')->toArray())
+                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('split')
                     ->label('Split Entry?'),
@@ -90,7 +91,7 @@ class IncomeResource extends Resource
             ->filters([
                 SelectFilter::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id')),
+                    ->options(Category::where('type', 'debit')->pluck('title', 'id')),
                 TernaryFilter::make('split')
                     ->label('Split Status')
                     ->placeholder('All Entries')
@@ -101,6 +102,7 @@ class IncomeResource extends Resource
                         false: fn (Builder $query) => $query->where('split', 0),
                         blank: fn (Builder $query) => $query
                     ),
+
             ])
             ->defaultGroup('category.title')
             ->actions([
@@ -113,22 +115,22 @@ class IncomeResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('credit_amount', '>', 0)->whereNotNull('category_id'));
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('debit_amount', '>', 0)->whereNotNull('category_id'));
     }
 
     public static function getRelations(): array
     {
         return [
-            SplitIncomesRelationManager::class,
+            SplitExpensesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListIncomes::route('/'),
-            'create' => Pages\CreateIncome::route('/create'),
-            'edit' => Pages\EditIncome::route('/{record}/edit'),
+            'index' => Pages\ListExpenses::route('/'),
+            'create' => Pages\CreateExpense::route('/create'),
+            'edit' => Pages\EditExpense::route('/{record}/edit'),
         ];
     }
 }
