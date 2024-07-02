@@ -100,7 +100,7 @@ class ToProcessResource extends Resource
                     ->alignCenter(),
                 IconColumn::make('is_pass_through')
                     ->boolean()
-                    ->label('Non Budget Item')
+                    ->label('Non-Budget Item')
                     ->trueIcon('heroicon-o-arrows-right-left')
                     ->falseIcon('heroicon-o-arrows-right-left')
                     ->trueColor('success')
