@@ -76,7 +76,7 @@ class EntriesResource extends Resource
                     ->label('Split Item?')
                     ->columnSpanFull(),
                 Toggle::make('is_pass_through')
-                    ->label('Pass Through Item')
+                    ->label('Non-Budget Item')
                     ->helperText('This will not be included in any budget calcaulations.'),
             ]);
     }
