@@ -9,6 +9,7 @@ use App\Filament\Resources\EntriesResource\RelationManagers\SplitIncomesRelation
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -71,9 +72,12 @@ class EntriesResource extends Resource
                     })
                     ->preload()
                     ->searchable(),
-                Forms\Components\Toggle::make('split')
+                Toggle::make('split')
                     ->label('Split Item?')
                     ->columnSpanFull(),
+                Toggle::make('is_pass_through')
+                    ->label('Pass Through Item')
+                    ->helperText('This will not be included in any budget calcaulations.'),
             ]);
     }
 
@@ -116,6 +120,12 @@ class EntriesResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('gray'),
+                IconColumn::make('is_pass_through')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-arrows-right-left')
+                    ->falseIcon('heroicon-o-arrows-right-left')
                     ->trueColor('success')
                     ->falseColor('danger'),
 
