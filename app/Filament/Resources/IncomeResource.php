@@ -100,7 +100,8 @@ class IncomeResource extends Resource
                     ->falseIcon('heroicon-o-arrows-right-left')
                     ->trueColor('success')
                     ->falseColor('gray')
-                    ->alignCenter(),
+                    ->alignCenter()
+                    ->label('Non Budget Item'),
 
             ])
             ->filters([

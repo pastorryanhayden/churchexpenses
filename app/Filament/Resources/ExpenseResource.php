@@ -101,7 +101,8 @@ class ExpenseResource extends Resource
                     ->falseIcon('heroicon-o-arrows-right-left')
                     ->trueColor('success')
                     ->falseColor('gray')
-                    ->alignCenter(),
+                    ->alignCenter()
+                    ->label('Non Budget Item'),
             ])
             ->filters([
                 SelectFilter::make('category_id')
