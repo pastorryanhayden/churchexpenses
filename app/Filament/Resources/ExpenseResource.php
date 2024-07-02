@@ -59,9 +59,6 @@ class ExpenseResource extends Resource
                 Toggle::make('split')
                     ->label('Split Item?')
                     ->columnSpanFull(),
-                Toggle::make('is_pass_through')
-                    ->label('Non-Budget Item')
-                    ->helperText('This will not be included in any budget calcaulations.'),
             ]);
 
     }
@@ -95,14 +92,7 @@ class ExpenseResource extends Resource
                     ->trueColor('success')
                     ->falseColor('gray')
                     ->alignCenter(),
-                IconColumn::make('is_pass_through')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-arrows-right-left')
-                    ->falseIcon('heroicon-o-arrows-right-left')
-                    ->trueColor('success')
-                    ->falseColor('gray')
-                    ->alignCenter()
-                    ->label('Non-Budget Item'),
+
             ])
             ->filters([
                 SelectFilter::make('category_id')
