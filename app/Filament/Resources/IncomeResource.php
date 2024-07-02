@@ -92,13 +92,15 @@ class IncomeResource extends Resource
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
-                    ->falseColor('gray'),
+                    ->falseColor('gray')
+                    ->alignCenter(),
                 IconColumn::make('is_pass_through')
                     ->boolean()
                     ->trueIcon('heroicon-o-arrows-right-left')
                     ->falseIcon('heroicon-o-arrows-right-left')
                     ->trueColor('success')
-                    ->falseColor('gray'),
+                    ->falseColor('gray')
+                    ->alignCenter(),
 
             ])
             ->filters([
