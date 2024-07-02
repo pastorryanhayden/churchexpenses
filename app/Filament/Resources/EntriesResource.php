@@ -63,6 +63,7 @@ class EntriesResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->required()]),
                 Forms\Components\Select::make('category_id')
+                    ->label('Category')
                     ->options(function (?Model $record) {
                         if ($record->credit_amount > 0) {
                             return Category::where('type', 'credit')->orWhere('type', 'pass-through')->pluck('title', 'id');
@@ -133,9 +134,7 @@ class EntriesResource extends Resource
                     ->icon('heroicon-m-pencil-square'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+
             ])
             ->headerActions([
                 ImportAction::make()

@@ -110,9 +110,6 @@ class ToProcessResource extends Resource
                     ->icon('heroicon-m-pencil-square'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('category_id'))
             ->headerActions([

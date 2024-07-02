@@ -117,9 +117,6 @@ class ExpenseResource extends Resource
                     ->icon('heroicon-m-pencil-square'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->where('debit_amount', '>', 0)->whereNotNull('category_id'));
     }

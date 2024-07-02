@@ -3,6 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\CategoryResource\RelationManagers\EntriesRelationManager;
+use App\Filament\Resources\CategoryResource\RelationManagers\SplitExpensessRelationManager;
+use App\Filament\Resources\CategoryResource\RelationManagers\SplitIncomesRelationManager;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -88,7 +91,9 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EntriesRelationManager::class,
+            SplitIncomesRelationManager::class,
+            SplitExpensessRelationManager::class,
         ];
     }
 
