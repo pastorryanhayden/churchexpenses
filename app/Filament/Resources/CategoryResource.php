@@ -27,6 +27,7 @@ class CategoryResource extends Resource
                     ->options([
                         'debit' => 'debit',
                         'credit' => 'credit',
+                        'pass-through' => 'pass-through',
                     ]),
                 Forms\Components\Select::make('group')
                     ->required()
@@ -37,7 +38,6 @@ class CategoryResource extends Resource
                         'building and utilities' => 'building and utilities',
                         'income' => 'income',
                         'operations' => 'operations',
-                        'non-budget' => 'non-budget',
                         'other' => 'other',
                     ]),
                 Forms\Components\TextInput::make('description'),

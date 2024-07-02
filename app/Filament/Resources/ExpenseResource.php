@@ -53,7 +53,7 @@ class ExpenseResource extends Resource
                         TextInput::make('name')
                             ->required()]),
                 Select::make('category_id')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id'))
+                    ->options(Category::where('type', 'debit')->orWhere('type', 'pass-through')->pluck('title', 'id'))
                     ->preload()
                     ->searchable(),
                 Toggle::make('split')
@@ -86,7 +86,7 @@ class ExpenseResource extends Resource
                     ->visibleFrom('2xl'),
                 Tables\Columns\SelectColumn::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
+                    ->options(Category::where('type', 'debit')->orWhere('type', 'pass-through')->pluck('title', 'id')->toArray())
                     ->sortable(),
                 IconColumn::make('split')
                     ->boolean()
@@ -107,7 +107,7 @@ class ExpenseResource extends Resource
             ->filters([
                 SelectFilter::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'debit')->pluck('title', 'id')),
+                    ->options(Category::where('type', 'debit')->orWhere('type', 'pass-through')->pluck('title', 'id')),
                 TernaryFilter::make('split')
                     ->label('Split Status')
                     ->placeholder('All Entries')

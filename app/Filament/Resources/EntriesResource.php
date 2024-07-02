@@ -65,9 +65,9 @@ class EntriesResource extends Resource
                 Forms\Components\Select::make('category_id')
                     ->options(function (?Model $record) {
                         if ($record->credit_amount > 0) {
-                            return Category::where('type', 'credit')->pluck('title', 'id');
+                            return Category::where('type', 'credit')->orWhere('type', 'pass-through')->pluck('title', 'id');
                         } elseif ($record->debit_amount > 0) {
-                            return Category::where('type', 'debit')->pluck('title', 'id');
+                            return Category::where('type', 'debit')->orWhere('type', 'pass-through')->pluck('title', 'id');
                         }
                     })
                     ->preload()
@@ -110,9 +110,9 @@ class EntriesResource extends Resource
                     ->label('Category')
                     ->options(function (?Model $record) {
                         if ($record->credit_amount > 0) {
-                            return Category::where('type', 'credit')->pluck('title', 'id')->toArray();
+                            return Category::where('type', 'credit')->orWhere('type', 'pass-through')->pluck('title', 'id')->toArray();
                         } elseif ($record->debit_amount > 0) {
-                            return Category::where('type', 'debit')->pluck('title', 'id')->toArray();
+                            return Category::where('type', 'debit')->orWhere('type', 'pass-through')->pluck('title', 'id')->toArray();
                         }
                     })
                     ->sortable(),

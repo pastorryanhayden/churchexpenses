@@ -52,7 +52,7 @@ class ToProcessResource extends Resource
                         TextInput::make('name')
                             ->required()]),
                 Select::make('category_id')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id'))
+                    ->options(Category::where('type', 'credit')->orWhere('type', 'pass-through')->pluck('title', 'id'))
                     ->preload()
                     ->searchable(),
                 Toggle::make('split')

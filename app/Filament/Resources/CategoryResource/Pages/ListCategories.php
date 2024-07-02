@@ -26,6 +26,9 @@ class ListCategories extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'credit')),
             'expenses' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'debit')),
+            'pass-through' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'pass-through')),
+
         ];
     }
 }
