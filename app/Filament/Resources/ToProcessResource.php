@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Imports\EntryImporter;
 use App\Filament\Resources\ToProcessResource\Pages;
+use App\Filament\Resources\ToProcessResource\RelationManagers\SplitExpensesRelationManager;
+use App\Filament\Resources\ToProcessResource\RelationManagers\SplitIncomesRelationManager;
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms\Components\DatePicker;
@@ -37,6 +39,11 @@ class ToProcessResource extends Resource
             ->schema([
                 DatePicker::make('date')
                     ->required(),
+                TextInput::make('debit_amount')
+                    ->numeric()
+                    ->default(0)
+                    ->disabled()
+                    ->prefix('$'),
                 TextInput::make('credit_amount')
                     ->numeric()
                     ->default(0)
@@ -52,15 +59,13 @@ class ToProcessResource extends Resource
                         TextInput::make('name')
                             ->required()]),
                 Select::make('category_id')
-                    ->options(Category::where('type', 'credit')->orWhere('type', 'pass-through')->pluck('title', 'id'))
+                    ->options(Category::all()->pluck('title', 'id'))
+                    ->label('Category')
                     ->preload()
                     ->searchable(),
                 Toggle::make('split')
                     ->label('Split Item?')
                     ->columnSpanFull(),
-                Toggle::make('is_pass_through')
-                    ->label('Non-Budget Item')
-                    ->helperText('This will not be included in any budget calcaulations.'),
             ]);
 
     }
@@ -121,6 +126,8 @@ class ToProcessResource extends Resource
     public static function getRelations(): array
     {
         return [
+            SplitIncomesRelationManager::class,
+            SplitExpensesRelationManager::class,
         ];
     }
 
