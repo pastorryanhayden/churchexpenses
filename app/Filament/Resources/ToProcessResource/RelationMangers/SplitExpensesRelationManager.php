@@ -27,7 +27,7 @@ class SplitExpensesRelationManager extends RelationManager
                     ->required(),
                 Forms\Components\Select::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'debit')->pluck('title', 'id')->toArray())
+                    ->options(Category::where('type', 'debit')->orWhere('type', 'to-process')->pluck('title', 'id')->toArray())
                     ->searchable()
                     ->preload(),
                 Forms\Components\Select::make('vendor_id')
@@ -56,7 +56,7 @@ class SplitExpensesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('date')
                     ->date(),
                 Tables\Columns\TextColumn::make('vendor.name'),
-                Tables\Columns\TextColumn::make('category.name'),
+                Tables\Columns\TextColumn::make('category.title'),
                 Tables\Columns\TextColumn::make('note'),            ])
             ->filters([
                 //

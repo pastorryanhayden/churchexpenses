@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\ToProcessResource\RelationManagers;
 
 use App\Models\Category;
-use App\Models\Vendor;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -23,19 +22,12 @@ class SplitIncomesRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->prefix('$'),
-                Forms\Components\DatePicker::make('date')
-                    ->required(),
                 Forms\Components\Select::make('category_id')
                     ->label('Category')
-                    ->options(Category::where('type', 'credit')->pluck('title', 'id')->toArray())
+                    ->options(Category::where('type', 'credit')->orWhere('type', 'pass-through')->pluck('title', 'id')->toArray())
                     ->searchable()
                     ->preload(),
-                Forms\Components\Select::make('vendor_id')
-                    ->label('Vendor')
-                    ->options(Vendor::all()->pluck('name', 'id')->toArray())
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('note')
+                Forms\Components\TextInput::make('notes')
                     ->columnSpanFull(),
             ]);
 
@@ -53,11 +45,8 @@ class SplitIncomesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('amount')
                     ->money('USD'),
-                Tables\Columns\TextColumn::make('date')
-                    ->date(),
-                Tables\Columns\TextColumn::make('vendor.name'),
-                Tables\Columns\TextColumn::make('category.name'),
-                Tables\Columns\TextColumn::make('note'),            ])
+                Tables\Columns\TextColumn::make('category.title'),
+                Tables\Columns\TextColumn::make('notes'),            ])
             ->filters([
                 //
             ])

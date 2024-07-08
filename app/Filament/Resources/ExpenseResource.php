@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExpenseResource\Pages;
-use App\Filament\Resources\ExpenseResource\RelationManagers\SplitExpensesRelationManager;
+use App\Filament\Resources\ToProcessResource\RelationManagers\SplitExpensesRelationManager;
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms\Components\DatePicker;

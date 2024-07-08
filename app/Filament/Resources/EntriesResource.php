@@ -4,8 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Imports\EntryImporter;
 use App\Filament\Resources\EntriesResource\Pages;
-use App\Filament\Resources\EntriesResource\RelationManagers\SplitExpensesRelationManager;
-use App\Filament\Resources\EntriesResource\RelationManagers\SplitIncomesRelationManager;
+use App\Filament\Resources\ToProcessResource\RelationManagers\SplitExpensesRelationManager;
+use App\Filament\Resources\ToProcessResource\RelationManagers\SplitIncomesRelationManager;
 use App\Models\Category;
 use App\Models\Entry;
 use Filament\Forms;
